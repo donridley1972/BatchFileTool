@@ -51,7 +51,7 @@ Window               WINDOW('Batch File Tool'),AT(,,393,224),FONT('Segoe UI',11)
   GRAY,SYSTEM,WALLPAPER('gradient(1).png'),IMM
                        BUTTON,AT(365,200,26),USE(?Close),COLOR(00F8A865h),ICON('exit.ico'),TIP('Exit App')
                        LIST,AT(90,43,300,137),USE(?List),LEFT(2),HVSCROLL,FORMAT('120L(2)M~Files~@s30@'),FROM(Queue:Browse), |
-  IMM
+  IMM,TIP('Files to be Placed in BAT (*.BAT) File')
                        BUTTON,AT(331,184,18,14),USE(?Insert),COLOR(00F8A865h),ICON('add.ico'),TIP('Insert Reco' & |
   'rd Into BackUp Records')
                        BUTTON,AT(352,184,18,14),USE(?Change),COLOR(00F8A865h),ICON('pencil.ico'),TIP('Edit BackUp Record')
@@ -60,7 +60,7 @@ Window               WINDOW('Batch File Tool'),AT(,,393,224),FONT('Segoe UI',11)
                        BUTTON('Create Batch File'),AT(90,184),USE(?CreateBatchFileBtn),FONT(,,00F8A865h,FONT:bold), |
   LEFT,COLOR(007C4922h),ICON('check2.ico'),FLAT,HIDE,TIP('Create the BAT (*.BAT) File'),TRN
                        LIST,AT(2,43,83,137),USE(?List:2),LEFT(2),FORMAT('120L(2)|M~Projects~@s30@'),FROM(Queue:Browse:1), |
-  IMM
+  IMM,TIP('Projects')
                        BUTTON,AT(2,184,18,14),USE(?Insert:2),COLOR(00F8A865h),ICON('add.ico'),TIP('Insert New Project')
                        BUTTON,AT(23,184,18,14),USE(?Change:2),COLOR(00F8A865h),ICON('pencil.ico'),TIP('Edit Project')
                        BUTTON,AT(44,184,18,14),USE(?Delete:2),COLOR(00F8A865h),ICON('trash.ico'),TIP('Delete Project')
@@ -129,9 +129,9 @@ ReturnValue          BYTE,AUTO
   SELF.FirstField = ?Close
   SELF.VCRRequest &= VCRRequest
   SELF.Errors &= GlobalErrors                              ! Set this windows ErrorManager to the global ErrorManager
-  SELF.AddItem(Toolbar)
   CLEAR(GlobalRequest)                                     ! Clear GlobalRequest after storing locally
   CLEAR(GlobalResponse)
+  SELF.AddItem(Toolbar)
   IF SELF.Request = SelectRecord
      SELF.AddItem(?Close,RequestCancelled)                 ! Add the close control to the window manger
   ELSE

@@ -492,9 +492,9 @@ ReturnValue          BYTE,AUTO
   SELF.FirstField = ?ListQueue
   SELF.VCRRequest &= VCRRequest
   SELF.Errors &= GlobalErrors                              ! Set this windows ErrorManager to the global ErrorManager
-  SELF.AddItem(Toolbar)
   CLEAR(GlobalRequest)                                     ! Clear GlobalRequest after storing locally
   CLEAR(GlobalResponse)
+  SELF.AddItem(Toolbar)
   SELF.Open(window)                                        ! Open window
   Do DefineListboxStyle
     do BuildListQueue
