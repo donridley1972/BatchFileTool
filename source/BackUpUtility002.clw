@@ -6,6 +6,7 @@
    INCLUDE('ABBROWSE.INC'),ONCE
    INCLUDE('ABPOPUP.INC'),ONCE
    INCLUDE('ABTOOLBA.INC'),ONCE
+   INCLUDE('ABUTIL.INC'),ONCE
    INCLUDE('ABWINDOW.INC'),ONCE
 
                      MAP
@@ -21,6 +22,9 @@
 Main PROCEDURE 
 
 StartPath            STRING(255)                           ! 
+BatchLookupVar       STRING(150)                           ! 
+FileQueue4           SelectFileQueue
+FileQueueCount4      USHORT,AUTO
 BRW2::View:Browse    VIEW(BackUpFiles)
                        PROJECT(Bac:AppName)
                        PROJECT(Bac:PKBacGuid)
@@ -60,9 +64,13 @@ Window               WINDOW('Batch File Tool'),AT(,,393,224),FONT('Segoe UI',11)
                        BUTTON,AT(44,184,18,14),USE(?Delete:2),COLOR(00F8A865h),ICON('trash.ico')
                        IMAGE('batch-icon-26.png'),AT(2,1,52,39),USE(?IMAGE1)
                        IMAGE('Logo.png'),AT(57,10,192,23),USE(?IMAGE2)
+                       BUTTON,AT(310,184,18,14),USE(?LookupFile),COLOR(00F8A865h),ICON('batchinsert1.ico')
                      END
 
 st              StringTheory
+local                       CLASS
+BackUpFilesInsert           Procedure(string pFileName)
+                            End
 ThisWindow           CLASS(WindowManager)
 Init                   PROCEDURE(),BYTE,PROC,DERIVED
 Kill                   PROCEDURE(),BYTE,PROC,DERIVED
@@ -91,8 +99,11 @@ Q                      &Queue:Browse:1                !Reference to browse queue
 Init                   PROCEDURE(SIGNED ListBox,*STRING Posit,VIEW V,QUEUE Q,RelationManager RM,WindowManager WM)
                      END
 
+FileLookup4          SelectFileClass
 
   CODE
+? DEBUGHOOK(BackUpFiles:Record)
+? DEBUGHOOK(Projects:Record)
   GlobalResponse = ThisWindow.Run()                        ! Opens the window and starts an Accept Loop
 
 !---------------------------------------------------------------------------
@@ -146,6 +157,11 @@ ReturnValue          BYTE,AUTO
     Glo:DefaultOutputPath = GETINI('Settings','DefaultOutputPath',,'.\BackUpUtility.INI')  
   BRW2.AskProcedure = 1                                    ! Will call: UpdateBackupFiles(Pro:OutputPath,Pro:PKProjGuid)
   BRW5.AskProcedure = 2                                    ! Will call: UpdateProjects
+  FileLookup4.Init
+  FileLookup4.ClearOnCancel = True
+  FileLookup4.Flags=BOR(FileLookup4.Flags,FILE:LongName)   ! Allow long filenames
+  FileLookup4.SetMask('All Files','*.*')                   ! Set the file mask
+  FileLookup4.WindowTitle='Select Files to Backup'
   BRW2.AddToolbarTarget(Toolbar)                           ! Browse accepts toolbar control
   BRW5.AddToolbarTarget(Toolbar)                           ! Browse accepts toolbar control
   csResize.Open()
@@ -221,6 +237,19 @@ Looped BYTE
       BRW2.ResetSort(1)      
     END
   ReturnValue = PARENT.TakeAccepted()
+    CASE ACCEPTED()
+    OF ?LookupFile
+      ThisWindow.Update()
+      FileLookup4.Ask(FileQueue4,1)                        ! Display lookup dialog
+      LOOP FileQueueCount4=1 TO RECORDS(FileQueue4)        ! Perorm actions on each selected file
+        GET(FileQueue4,FileQueueCount4)
+        ASSERT(~ERRORCODE())
+        BatchLookupVar=FileQueue4.Name
+        DISPLAY
+        local.BackUpFilesInsert(BatchLookupVar)
+      END
+      BRW2.ResetSort(1)      
+    END
     RETURN ReturnValue
   END
   ReturnValue = Level:Fatal
@@ -278,6 +307,15 @@ Looped BYTE
   ReturnValue = Level:Fatal
   RETURN ReturnValue
 
+local.BackUpFilesInsert           Procedure(string pFileName)
+    CODE
+    Bac:PKBacGuid   = glo:st.MakeGuid()
+    Bac:FKProjGuid = Pro:PKProjGuid
+    !Bac:Description
+    Bac:AppName     = glo:st.FileNameOnly(pFileName)
+    Bac:InputPath   = pFileName
+    Bac:OutputPath  = Pro:OutputPath  
+    Access:BackUpFiles.Insert()
 !----------------------------------------------------
 csResize.Fetch   PROCEDURE (STRING Sect,STRING Ent,*? Val)
   CODE
@@ -304,6 +342,7 @@ csResize.Init   PROCEDURE ()
   SELF.SetStrategy(?Insert:2,,100,,0)
   SELF.SetStrategy(?Change:2,,100,,0)
   SELF.SetStrategy(?Delete:2,,100,,0)
+  SELF.SetStrategy(?LookupFile,100,100,0,0)
 
 BRW2.Init PROCEDURE(SIGNED ListBox,*STRING Posit,VIEW V,QUEUE Q,RelationManager RM,WindowManager WM)
 
