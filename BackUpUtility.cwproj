@@ -1,0 +1,73 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{98C2B255-DE96-400F-99E3-12E9FD19ED39}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Win32</Platform>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>BackUpUtility</RootNamespace>
+    <AssemblyName>BackUpUtility</AssemblyName>
+    <OutputName>BatchFileTool</OutputName>
+    <CWOutputType>Exe</CWOutputType>
+    <DefineConstants>StringTheoryLinkMode=&gt;1%3bStringTheoryDllMode=&gt;0%3bMD5=&gt;0%3bFM2=&gt;1%3b_RASLinkMode_=&gt;1%3b_RASDllMode_=&gt;0%3b_ABCDllMode_=&gt;0%3b_ABCLinkMode_=&gt;1</DefineConstants>
+    <Model>Dll</Model>
+    <stack_size>16384</stack_size>
+    <CopyCore>True</CopyCore>
+    <ApplicationIcon>appicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <vid>full</vid>
+    <check_stack>True</check_stack>
+    <check_index>True</check_index>
+    <warnings>on</warnings>
+    <GenerateMap>True</GenerateMap>
+    <line_numbers>True</line_numbers>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <vid>off</vid>
+    <check_stack>False</check_stack>
+    <check_index>False</check_index>
+  </PropertyGroup>
+  <ItemGroup>
+    <FileDriver Include="DOS" />
+    <FileDriver Include="TOPSPEED" />
+    <Library Include="BatchFileTool.EXE.manifest" />
+    <Library Include="CLAFM3.lib" />
+    <Library Include="smalltik.ico" />
+    <Compile Include="BackUpUtility.clw">
+      <Generated>true</Generated>
+    </Compile>
+    <Compile Include="BackUpUtility001.clw">
+      <Generated>true</Generated>
+    </Compile>
+    <Compile Include="BackUpUtility002.clw">
+      <Generated>true</Generated>
+    </Compile>
+    <Compile Include="BackUpUtility003.clw">
+      <Generated>true</Generated>
+    </Compile>
+    <Compile Include="BackUpUtility004.clw">
+      <Generated>true</Generated>
+    </Compile>
+    <Compile Include="BACKUPUTILITY_BC.CLW">
+      <Generated>true</Generated>
+    </Compile>
+    <Compile Include="BackUpUtility_BC0.CLW">
+      <Generated>true</Generated>
+    </Compile>
+    <None Include="clafm3.Dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Generated>True</Generated>
+      <ProjectGenerated>True</ProjectGenerated>
+    </None>
+    <None Include="zlibwapi.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Generated>True</Generated>
+      <ProjectGenerated>True</ProjectGenerated>
+    </None>
+  </ItemGroup>
+  <Import Project="$(ClarionBinPath)\SoftVelocity.Build.Clarion.targets" />
+</Project>
