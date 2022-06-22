@@ -49,22 +49,25 @@ ViewPosition           STRING(1024)                   !Entry's view position
                      END
 Window               WINDOW('Batch File Tool'),AT(,,393,224),FONT('Segoe UI',11),RESIZE,AUTO,ICON('appicon.ico'), |
   GRAY,SYSTEM,WALLPAPER('gradient(1).png'),IMM
-                       BUTTON,AT(365,200,26),USE(?Close),COLOR(00F8A865h),ICON('exit.ico')
+                       BUTTON,AT(365,200,26),USE(?Close),COLOR(00F8A865h),ICON('exit.ico'),TIP('Exit App')
                        LIST,AT(90,43,300,137),USE(?List),LEFT(2),HVSCROLL,FORMAT('120L(2)M~Files~@s30@'),FROM(Queue:Browse), |
   IMM
-                       BUTTON,AT(331,184,18,14),USE(?Insert),COLOR(00F8A865h),ICON('add.ico')
-                       BUTTON,AT(352,184,18,14),USE(?Change),COLOR(00F8A865h),ICON('pencil.ico')
-                       BUTTON,AT(373,184,18,14),USE(?Delete),COLOR(00F8A865h),ICON('trash.ico')
+                       BUTTON,AT(331,184,18,14),USE(?Insert),COLOR(00F8A865h),ICON('add.ico'),TIP('Insert Reco' & |
+  'rd Into BackUp Records')
+                       BUTTON,AT(352,184,18,14),USE(?Change),COLOR(00F8A865h),ICON('pencil.ico'),TIP('Edit BackUp Record')
+                       BUTTON,AT(373,184,18,14),USE(?Delete),COLOR(00F8A865h),ICON('trash.ico'),TIP('Delete Bac' & |
+  'kUp Record')
                        BUTTON('Create Batch File'),AT(90,184),USE(?CreateBatchFileBtn),FONT(,,00F8A865h,FONT:bold), |
-  LEFT,COLOR(007C4922h),ICON('check2.ico'),FLAT,HIDE,TRN
+  LEFT,COLOR(007C4922h),ICON('check2.ico'),FLAT,HIDE,TIP('Create the BAT (*.BAT) File'),TRN
                        LIST,AT(2,43,83,137),USE(?List:2),LEFT(2),FORMAT('120L(2)|M~Projects~@s30@'),FROM(Queue:Browse:1), |
   IMM
-                       BUTTON,AT(2,184,18,14),USE(?Insert:2),COLOR(00F8A865h),ICON('add.ico')
-                       BUTTON,AT(23,184,18,14),USE(?Change:2),COLOR(00F8A865h),ICON('pencil.ico')
-                       BUTTON,AT(44,184,18,14),USE(?Delete:2),COLOR(00F8A865h),ICON('trash.ico')
+                       BUTTON,AT(2,184,18,14),USE(?Insert:2),COLOR(00F8A865h),ICON('add.ico'),TIP('Insert New Project')
+                       BUTTON,AT(23,184,18,14),USE(?Change:2),COLOR(00F8A865h),ICON('pencil.ico'),TIP('Edit Project')
+                       BUTTON,AT(44,184,18,14),USE(?Delete:2),COLOR(00F8A865h),ICON('trash.ico'),TIP('Delete Project')
                        IMAGE('batch-icon-26.png'),AT(2,1,52,39),USE(?IMAGE1)
                        IMAGE('Logo.png'),AT(57,10,192,23),USE(?IMAGE2)
-                       BUTTON,AT(310,184,18,14),USE(?LookupFile),COLOR(00F8A865h),ICON('batchinsert1.ico')
+                       BUTTON,AT(310,184,18,14),USE(?LookupFile),COLOR(00F8A865h),ICON('batchinsert1.ico'),TIP('Batch Inse' & |
+  'rt Records Into BackUp Records')
                      END
 
 st              StringTheory
