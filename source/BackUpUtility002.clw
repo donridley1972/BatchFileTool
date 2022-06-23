@@ -71,6 +71,7 @@ Window               WINDOW('Batch File Tool'),AT(,,393,224),FONT('Segoe UI',11)
                      END
 
 st              StringTheory
+CheckSt         StringTheory
 local                       CLASS
 BackUpFilesInsert           Procedure(string pFileName)
                             End
@@ -129,9 +130,9 @@ ReturnValue          BYTE,AUTO
   SELF.FirstField = ?Close
   SELF.VCRRequest &= VCRRequest
   SELF.Errors &= GlobalErrors                              ! Set this windows ErrorManager to the global ErrorManager
+  SELF.AddItem(Toolbar)
   CLEAR(GlobalRequest)                                     ! Clear GlobalRequest after storing locally
   CLEAR(GlobalResponse)
-  SELF.AddItem(Toolbar)
   IF SELF.Request = SelectRecord
      SELF.AddItem(?Close,RequestCancelled)                 ! Add the close control to the window manger
   ELSE
@@ -223,19 +224,34 @@ Looped BYTE
     CASE ACCEPTED()
     OF ?CreateBatchFileBtn
       st.SetValue('echo on<13,10>')
-      st.Append('rem -- Copying Files -----------------------------------<13,10>')
+      st.Append('rem -- Copying Files -----------------------------------<13,10>' & |
+      'for /f %%I in (<39>wmic os get localdatetime ^|find "20"<39>) do set dt=%%I <13,10>' & |
+      'REM dt format is now YYYYMMDDhhmmss... <13,10>' & |
+      'REM dt format is now 01234567890123 <13,10>' & |
+      'Set DATE_TIME=%dt:~0,8%_%dt:~8,6% <13,10>' & |
+      'echo %DATE_TIME% %dt%<13,10>')
       Set(BRW2::View:Browse)
       LOOP
         Next(BRW2::View:Browse)
         If Errorcode() Then Break END
         If Lower(st.ExtensionOnly(Bac:InputPath)) <> 'exe' and Lower(st.ExtensionOnly(Bac:InputPath)) <> 'dll'
-            st.Append('copy /Y /V "'&clip(Bac:InputPath)&'" "'&clip(Bac:OutputPath)&'\'&st.FileNameOnly(Bac:InputPath,0)&'_'&Format(Today(),'@d12')&'_'&Format(Clock(),'@t5') & '.' & st.ExtensionOnly(Bac:InputPath) &'"<13,10>')
+            st.Append('copy /Y /V "'&clip(Bac:InputPath)&'" "'&clip(Bac:OutputPath)&'\'&st.FileNameOnly(Bac:InputPath,0)&'_%DATE_TIME%.' & st.ExtensionOnly(Bac:InputPath) &'"<13,10>')
+            !st.Append('copy /Y /V "'&clip(Bac:InputPath)&'" "'&clip(Bac:OutputPath)&'\'&st.FileNameOnly(Bac:InputPath,0)&'_'&Format(Today(),'@d12')&'_'&Format(Clock(),'@t5') & '.' & st.ExtensionOnly(Bac:InputPath) &'"<13,10>')
         ELSE
             st.Append('copy /Y /V "'&clip(Bac:InputPath)&'" "'&clip(Bac:OutputPath)&'\'&st.FileNameOnly(Bac:InputPath,1)&'"<13,10>')
         End
         !xcopy /C /Y /E "C:\Clarion11\accessory\libsrc\win\netweb\web\*.*" "web\*"
       End    
-      st.SaveFile(Clip(Pro:SaveBatTo) & '\' & clip(Pro:ProjDescription) & '_BackUp.bat')
+      CheckSt.SetValue(Pro:ProjDescription,1)
+      If CheckSt.ContainsChar('!@#$%^&*()_+~<>?:"{{}[]=-_`') = 0  
+        if st.SaveFile(Clip(Pro:SaveBatTo) & '\' & clip(Pro:ProjDescription) & '_BackUp.bat') <> 1
+            message('Error Saving File!')
+        ELSE
+            message('Success! - .BAT File Created.')
+        End
+      ELSE
+        message('Project Description Contains Illegal Characters!')
+      End
     OF ?List:2
       BRW2.ResetSort(1)      
     END
